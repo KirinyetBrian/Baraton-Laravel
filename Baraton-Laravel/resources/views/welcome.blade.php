@@ -33,6 +33,20 @@
 								<li><a href="https://twitter.com/" class="fa fa-twitter icon-border twitter"> </a></li>
 								<li><a href="https://plus.google.com/u/0/" class="fa fa-google-plus icon-border googleplus"> </a></li>
 							</ul>
+                            @if ($errors->any())
+                            <div class="alert alert-danger">
+                              <ul>
+                                  @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                  @endforeach
+                              </ul>
+                            </div><br />
+                          @endif
+                          @if(Session::has('success'))
+                          <div class="alert alert-success text-center">
+                              {{Session::get('success')}}
+                          </div>
+                        @endif
 
 			</div>
 			<div class="contact-bnr-w3-agile">
@@ -78,7 +92,20 @@
 							<li ><a href="/list" class="">List</a></li>
 							<li class="menu__item"><a href="#rooms" class="menu__link scroll">Rooms</a></li>
 							<li class="menu__item"><a href="#contact" class="menu__link scroll">Contact Us</a></li>
-							{{-- <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li> --}}
+							<li>
+
+
+                                <a class="dropdown-item mt-2" href="{{ route('logout') }}"
+                                onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-in-left me-2 text-warning"></i>
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+
+                            </li>
 						</ul>
 					</nav>
 				</div>
@@ -415,7 +442,8 @@
 			<div class="contact-agileits">
 				<h4>Contact Us</h4>
 				<p class="contact-agile2">Sign Up For Our News Letters</p>
-				<form  method="post" name="sentMessage" id="contactForm" >
+				<form  method="post" action="/message" name="sentMessage" id="contactForm" >
+                    @csrf
 					<div class="control-group form-group">
 
                             <label class="contact-p1">Full Name:</label>
@@ -438,24 +466,16 @@
 
                     </div>
 
+                    <div class="control-group form-group">
 
+                        <label class="contact-p1">Message:</label>
+                        <input type="text" class="form-control" name="message" id="message" required >
+                        <p class="help-block"></p>
+
+                </div>
                     <input type="submit" name="sub" value="Send Now" class="btn btn-primary">
 				</form>
-				<?php
-				if(isset($_POST['sub']))
-				{
-					$name =$_POST['name'];
-					$phone = $_POST['phone'];
-					$email = $_POST['email'];
-					$approval = "Not Allowed";
-					$sql = "INSERT INTO `contact`(`fullname`, `phoneno`, `email`,`cdate`,`approval`) VALUES ('$name','$phone','$email',now(),'$approval')" ;
 
-
-					if(mysqli_query($con,$sql))
-					echo"OK";
-
-				}
-				?>
 			</div>
 		</div>
 		<div class="col-lg-6 col-md-6 col-sm-6 contact-w3-agile1" data-aos="flip-right">
